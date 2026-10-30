@@ -56,7 +56,7 @@ export default function Shop({ products }: { products: Product[] }) {
           </div>
           {featured && (
             <figure className="hero-card">
-              <Image src={featured.image} alt={featured.title} width={500} height={500} />
+              <Image src={featured.image} alt={featured.title} width={500} height={500} unoptimized/>
               <figcaption>
                 <strong>Top rated: {featured.title}</strong>
                 <span>{featured.rating.rate} / 5 from {featured.rating.count} reviews</span>
@@ -86,7 +86,7 @@ export default function Shop({ products }: { products: Product[] }) {
             {visible.map((p) => (
               <article key={p.id} className="card">
                 <div className="thumb">
-                  <Image src={p.image} alt={p.title} width={500} height={500} loading="lazy" />
+                  <Image src={p.image} alt={p.title} width={500} height={500} loading="lazy" unoptimized/>
                 </div>
                 <p className="cat">{p.category}</p>
                 <h3>{p.title}</h3>
