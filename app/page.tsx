@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Image from "next/image";
 
 type Product = {
@@ -9,42 +10,40 @@ type Product = {
 
 function Shop({ products }: { products: Product[] }) {
   return (
-    <main className="wrap">
-      <h1>Shop</h1>
-      <div className="products">
+    <main style={{ padding: 40 }}>
+      <h1>Products</h1>
+      <ul>
         {products.map((product) => (
-          <article key={product.id}>
+          <li key={product.id}>
             <Image
               src={product.image}
               alt={product.title}
-              width={160}
-              height={160}
+              width={100}
+              height={100}
               unoptimized
             />
             <h2>{product.title}</h2>
             <p>${product.price.toFixed(2)}</p>
-          </article>
+          </li>
         ))}
-      </div>
+      </ul>
     </main>
   );
 }
 
-export default async function Home() {
-  let products = [];
-  try {
-    const res = await fetch("https://fakestoreapi.com/products", {
-      next: { revalidate: 3600 },
-    });
-    if (!res.ok) throw new Error("Bad response");
-    products = await res.json();
-  } catch {
-    return (
-      <main className="wrap" style={{ padding: "80px 0" }}>
-        <h1>Products didn&apos;t load</h1>
-        <p>Check your internet connection and refresh the page.</p>
-      </main>
-    );
+async function Products() {
+  const res = await fetch("https://fakestoreapi.com/products").catch(() => null);
+  if (!res || !res.ok) {
+    return <p style={{ padding: 40 }}>Products didn&apos;t load. Refresh the page.</p>;
   }
+  const products = await res.json();
   return <Shop products={products} />;
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<p style={{ padding: 40 }}>Loading products…</p>}>
+      <Products />
+    </Suspense>
+  );
 }
